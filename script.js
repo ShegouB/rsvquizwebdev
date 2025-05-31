@@ -373,13 +373,10 @@ async function checkIfAdmin() {
       return;
     }
 
-    if (data.a_participe) {
-  // Construire l'URL avec l'email en paramètre
-  const resultsUrl = `result_public.html?email=${encodeURIComponent(email)}`;
-  msg.innerHTML = `Vous avez déjà participé au quiz. <br><a href="${resultsUrl}">Cliquez ici pour voir vos résultats.</a>`;
-  msg.style.color = "lightgreen";
-  // Plus besoin d'event listener ici, le lien redirige directement.
-  return;
+    if (data.is_admin) {
+      const customAdminUrl = '/app/admin.html/'; // **ADAPTEZ CETTE URL**
+      window.location.href = `https://${renderApiDomain}/admin/login/?next=${encodeURIComponent(customAdminUrl)}`;
+      return;
     }
 
     currentEmail = email;
