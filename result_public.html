@@ -1,0 +1,88 @@
+<!-- result_public.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vos Résultats au Quiz</title>
+  <link rel="stylesheet" href="style.css" /> <!-- ou un style spécifique -->
+  <style>
+    /* Styles similaires à votre #result-box */
+    body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #101820; color: #00f7ff; font-family: Arial, sans-serif; }
+    .result-container { background-color: #1e1e2f; padding: 30px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); text-align: center; }
+    h2 { margin-bottom: 20px; }
+    #score_public p { margin: 10px 0; }
+    #score_public b { color: #fff; }
+    #error_message { color: red; }
+  </style>
+</head>
+<body>
+  <div class="result-container">
+    <h2>Vos Résultats au Quiz</h2>
+    <div id="score_public">Chargement des résultats...</div>
+    <div id="error_message"></div>
+  </div>
+
+  <script>
+    const renderApiHostname = "https://sitersv.onrender.com";
+    const API_BASE_PUBLIC = `https://${renderApiHostname}/api`; 
+
+    async function loadPublicResults() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get('email');
+      const scoreDiv = document.getElementById('score_public');
+      const errorDiv = document.getElementById('error_message');
+
+      if (!email) {
+        scoreDiv.innerHTML = "";
+        errorDiv.textContent = "Aucun e-mail fourni pour afficher les résultats.";
+        return;
+      }
+
+      try {
+        // Utilise la même API que afficherResultatsComplet
+        const res = await fetch(`${API_BASE_PUBLIC}/score-details/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }, // Pas besoin de CSRF pour une requête POST qui récupère des données publiques si l'API est conçue ainsi
+          body: JSON.stringify({ email: email })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || `Erreur HTTP ${res.status} lors de la récupération des résultats.`);
+        }
+        
+        const data = await res.json();
+
+        // Affichage des résultats (similaire à votre afficherResultatsComplet)
+        scoreDiv.innerHTML = `
+          <p>Email : <b>${email}</b></p>
+          <p>Note théorique : <b>${data.note_theorique} / ${data.total_possible_theorique || 100}</b></p>
+          <p>Note pratique : <b>${data.note_pratique > 0 ? data.note_pratique : "Non disponible"} / ${data.total_possible_pratique || 100}</b></p>
+          <hr>
+          <p>Note finale : <b>${data.note_finale} / 100</b></p>
+          <p>Mention : <b>${data.mention}</b></p>
+        `;
+
+        if (data.note_pratique > 0 && data.certificat) {
+          const btnCert = document.createElement("button");
+          btnCert.textContent = "📄 Télécharger mon certificat";
+          btnCert.style.marginTop = "20px";
+          btnCert.onclick = () => {
+            window.open(`${API_BASE_PUBLIC}/certificat/${email}/`, "_blank");
+          };
+          scoreDiv.appendChild(btnCert);
+        } else if (data.note_pratique > 0 && !data.certificat) {
+            scoreDiv.innerHTML += `<p style="color: orange;">Vous n'avez pas atteint le score requis pour un certificat.</p>`;
+        }
+
+
+      } catch (err) {
+        console.error("Erreur chargement résultats publics:", err);
+        scoreDiv.innerHTML = "";
+        errorDiv.textContent = `Erreur: ${err.message}`;
+      }
+    }
+    window.onload = loadPublicResults;
+  </script>
+</body>
+</html>

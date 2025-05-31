@@ -1,0 +1,343 @@
+/* Réinitialisation de base et styles globaux */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(145deg, #0a192f, #112240, #000000); /* Fond plus sombre, plus tech */
+  font-family: 'Arial', sans-serif; /* Police moderne par défaut */
+  color: #ccd6f6; /* Couleur de texte claire, moins agressive que blanc pur */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* min-height pour permettre le scroll si le contenu dépasse */
+  padding: 20px; /* Un peu d'espace autour du container sur petits écrans */
+  overflow-x: hidden; /* Empêcher le scroll horizontal */
+}
+
+.quiz-container {
+  background: rgba(10, 25, 47, 0.85); /* Fond semi-transparent pour effet de profondeur */
+  backdrop-filter: blur(10px); /* Effet de verre dépoli (support limité) */
+  border-radius: 15px;
+  border: 1px solid rgba(0, 247, 255, 0.2); /* Bordure néon subtile */
+  box-shadow: 0 0 30px rgba(0, 247, 255, 0.3), 0 0 60px rgba(0, 247, 255, 0.1); /* Ombre néon plus diffuse */
+  padding: 30px 40px; /* Plus d'espace horizontal */
+  max-width: 650px;
+  width: 95%; /* Légèrement moins que 100% pour ne pas coller aux bords */
+  text-align: center; /* Centrer le texte par défaut dans le container */
+  transition: height 0.5s ease-in-out; /* Pour les transitions de hauteur */
+}
+
+.quiz-header h1 {
+  font-family: 'Arial', sans-serif; /* Police futuriste pour le titre */
+  color: #64ffda;  /* Vert néon/cyan, couleur tech courante */
+  font-size: 2.5rem; /* Plus grand titre */
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+  text-shadow: 0 0 5px #64ffda, 0 0 10px #64ffda;
+}
+.quiz-header h1 .highlight {
+  color: #ccd6f6; /* Contraste pour une partie du titre */
+  text-shadow: none;
+}
+
+/* Styles pour les étapes du formulaire */
+.form-step {
+  /* La gestion hidden/visible est déjà là, on peut affiner les transitions */
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  width: 100%;
+}
+.form-step.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(20px); /* Petite animation de sortie */
+  position: absolute; /* Pour éviter les sauts de hauteur lors du changement */
+  left: -9999px; /* Hors de l'écran mais accessible pour les transitions */
+}
+.form-step.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+  position: relative; /* Retour à la position normale */
+  left: 0;
+}
+
+.form-instruction {
+  color: #8892b0; /* Couleur plus douce pour les instructions */
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+/* Styles pour les groupes d'input et labels flottants */
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-group input[type="email"],
+.input-group input[type="text"] {
+  width: 100%;
+  padding: 15px 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid #64ffda;
+  border-radius: 8px;
+  color: #ccd6f6;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input[type="email"]::placeholder,
+.input-group input[type="text"]::placeholder {
+  color: #8892b0; /* Placeholder plus subtil */
+  opacity: 0; /* Caché par défaut si label flottant est utilisé */
+}
+
+.input-group .input-label { /* Label flottant */
+  position: absolute;
+  left: 20px;
+  top: 16px;
+  color: #8892b0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  background-color: transparent; /* S'assurer qu'il n'y a pas de fond au label */
+  padding: 0 5px; /* Pour "couper" la bordure de l'input quand il monte */
+}
+
+.input-group input[type="email"]:focus + .input-label,
+.input-group input[type="text"]:focus + .input-label,
+.input-group input[type="email"]:not(:placeholder-shown) + .input-label, /* Important pour garder le label en haut si rempli */
+.input-group input[type="text"]:not(:placeholder-shown) + .input-label {
+  top: -10px; /* Position au-dessus de l'input */
+  font-size: 0.85rem;
+  color: #64ffda;
+  background-color: #0a192f; /* Doit correspondre au fond du .quiz-container pour l'effet "coupé" */
+}
+
+.input-group input[type="email"]:focus,
+.input-group input[type="text"]:focus {
+  border-color: #64ffda;
+  box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+}
+
+.form-message { /* Pour #email-msg, #name-msg */
+  min-height: 1.5em; /* Évite les sauts de mise en page */
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #64ffda; /* Couleur par défaut pour les messages (succès) */
+}
+.form-message.error { /* Ajouter la classe 'error' en JS si besoin */
+    color: #ff79c6; /* Rose pour les erreurs */
+}
+
+
+/* Style des boutons */
+button, .button-like { /* .button-like pour des <a> stylés comme des boutons */
+  font-family: 'Orbitron', sans-serif; /* Police futuriste */
+  margin-top: 20px;
+  width: 100%;
+  padding: 15px; /* Plus de padding */
+  font-size: 1.1rem;
+  border: 1px solid #64ffda;
+  background: transparent; /* Fond transparent, bordure néon */
+  color: #64ffda;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button:not(:disabled):hover, .button-like:hover {
+  background-color: rgba(100, 255, 218, 0.1); /* Remplissage néon léger au survol */
+  color: #fff;
+  box-shadow: 0 0 15px #64ffda, inset 0 0 10px rgba(100, 255, 218, 0.5);
+}
+
+button:disabled {
+  border-color: #4f5b66;
+  color: #4f5b66;
+  background: transparent;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+/* Section Bienvenue */
+#welcome-box h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: #ccd6f6;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+#welcome-box h2 .highlight {
+  color: #64ffda;
+  font-weight: bold;
+}
+#quiz-status {
+  color: #8892b0;
+  margin-bottom: 25px;
+  font-size: 1.1rem;
+}
+
+
+/* Styles pour le Quiz lui-même */
+#timer-question {
+  font-family: 'Orbitron', sans-serif;
+  color: #ff79c6; /* Rose pour le timer */
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  text-align: right;
+}
+
+#question {
+  font-size: 1.4rem; /* Question plus grande */
+  color: #ccd6f6;
+  margin-bottom: 25px;
+  line-height: 1.5; /* Meilleure lisibilité */
+}
+
+#choices {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+#choices li {
+  background: rgba(42, 60, 87, 0.5); /* Fond de choix semi-transparent */
+  border: 1px solid rgba(100, 255, 218, 0.3);
+  margin-bottom: 12px;
+  padding: 15px 20px; /* Plus de padding */
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: left; /* Aligner le texte des choix à gauche */
+  font-size: 1rem;
+}
+
+#choices li:hover {
+  background: rgba(100, 255, 218, 0.15);
+  border-color: #64ffda;
+  color: #fff; /* Le texte peut devenir blanc ou rester #ccd6f6 */
+  transform: translateY(-2px); /* Petit effet de soulèvement */
+}
+
+#choices li.selected { /* Ajouter cette classe en JS lors de la sélection */
+  background-color: rgba(100, 255, 218, 0.25);
+  border-color: #64ffda;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+}
+#choices li.correct { /* Ajouter en JS pour montrer la bonne réponse */
+    background-color: rgba(80, 200, 120, 0.3); /* Vert */
+    border-color: #50fa7b;
+    color: #fff;
+}
+#choices li.incorrect { /* Ajouter en JS pour montrer une mauvaise réponse sélectionnée */
+    background-color: rgba(255, 85, 85, 0.3); /* Rouge */
+    border-color: #ff5555;
+    color: #fff;
+}
+
+/* Section Résultat */
+#result-box h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: #64ffda;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+#score {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #ccd6f6;
+  margin-bottom: 25px;
+}
+#score b {
+    color: #fff; /* Mettre en évidence les chiffres du score */
+}
+
+
+/* Gestion des transitions hidden/visible améliorée (déjà présente mais affinée) */
+/* .hidden et .visible sont déjà dans votre CSS, assurez-vous qu'ils fonctionnent comme prévu */
+/* Si vous utilisez la technique de position: absolute, elle doit être bien gérée */
+/* Une approche simple pour hidden/visible SANS position:absolute pour les transitions : */
+.form-step {
+  transition: opacity 0.4s ease-in-out, max-height 0.4s ease-in-out, visibility 0.4s;
+  overflow: hidden;
+  max-height: 1000px; /* Assez grand pour contenir l'étape la plus haute */
+  visibility: visible;
+  opacity: 1;
+}
+.form-step.hidden {
+  opacity: 0;
+  max-height: 0;
+  visibility: hidden;
+  /* Important: supprimer padding/margin quand caché pour éviter les espaces vides */
+  padding-top: 0 !important; 
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border: none !important; /* si les étapes ont des bordures */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .quiz-container {
+    padding: 20px 25px;
+    width: 95%;
+  }
+  .quiz-header h1 {
+    font-size: 2rem;
+  }
+  #question {
+    font-size: 1.2rem;
+  }
+  #choices li, 
+  .input-group input[type="email"],
+  .input-group input[type="text"],
+  button {
+    font-size: 0.95rem;
+    padding: 12px 15px;
+  }
+  .input-group .input-label {
+    left: 15px;
+    top: 13px; /* Ajuster pour le padding réduit */
+  }
+  .input-group input[type="email"]:focus + .input-label,
+  .input-group input[type="text"]:focus + .input-label,
+  .input-group input[type="email"]:not(:placeholder-shown) + .input-label,
+  .input-group input[type="text"]:not(:placeholder-shown) + .input-label {
+    top: -9px; /* Ajuster pour le padding réduit */
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-container {
+    padding: 15px 20px;
+    border-radius: 10px;
+  }
+  .quiz-header h1 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+  #question {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+  #choices li,
+  .input-group input[type="email"],
+  .input-group input[type="text"],
+  button {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+  .input-group {
+    margin-bottom: 20px;
+  }
+  #timer-question {
+    font-size: 1rem;
+  }
+}

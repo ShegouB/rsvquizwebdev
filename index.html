@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Important pour le responsive -->
+  <title>Quiz Final - Web Development</title>
+
+  <link rel="icon" type="image/png" href="favicon15.png" sizes="16x16" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet"> <!-- Polices futuristes/modernes -->
+</head>
+<body>
+  <div class="quiz-container">
+    <header class="quiz-header">
+      <h1>Quiz Final <span class="highlight">- Web Dev</span></h1>
+    </header>
+
+    <main class="quiz-content">
+      <!-- ÉTAPE 1 : EMAIL -->
+      <div id="email-form" class="form-step visible"> <!-- Ajout de .form-step et .visible par défaut pour la première étape -->
+        <p class="form-instruction">Entrez votre adresse e-mail :</p>
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Adresse e-mail" required />
+          <label for="email" class="input-label">Adresse e-mail</label> <!-- Pour effet de label flottant -->
+        </div>
+        <button type="button" class="glow-on-hover" onclick="checkIfAdmin()">Valider</button>
+        <p id="email-msg" class="form-message"></p>
+      </div>
+
+      <!-- ÉTAPE 2 : NOM + PRÉNOM -->
+      <div id="identity-form" class="form-step hidden">
+        <p class="form-instruction">Adresse reconnue. Entrez votre nom et prénom :</p>
+        <div class="input-group">
+          <input type="text" id="nom" placeholder="Nom" required />
+          <label for="nom" class="input-label">Nom</label>
+        </div>
+        <div class="input-group">
+          <input type="text" id="prenom" placeholder="Prénom" required />
+          <label for="prenom" class="input-label">Prénom</label>
+        </div>
+        <button type="button" class="glow-on-hover" onclick="submitIdentity()">Suivant</button>
+        <p id="name-msg" class="form-message"></p>
+      </div>
+
+      <!-- ÉTAPE 3 : BIENVENUE -->
+      <div id="welcome-box" class="form-step hidden">
+        <h2>Bienvenue <span id="user-prenom" class="highlight"></span> !</h2>
+        <p id="quiz-status"></p>
+        <button id="startBtn" onclick="startQuiz()" class="hidden glow-on-hover">Commencer le quiz</button>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="quiz-box" class="form-step hidden">
+        <div id="timer-question"></div>
+        <div id="question">Chargement...</div>
+        <ul id="choices"></ul>
+        <button id="nextBtn" disabled class="glow-on-hover">Suivant</button>
+      </div>
+
+      <!-- RÉSULTAT -->
+      <div id="result-box" class="form-step hidden">
+        <h2>Résultat</h2>
+        <p id="score"></p>
+        <button onclick="location.reload()" class="glow-on-hover">Recommencer</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
