@@ -363,7 +363,8 @@ async function checkIfAdmin() {
     const data = await res.json();
 
     if (data.is_admin) {
-      window.location.href = "https://sitersv.onrender.com/admin/?next=/admin.html";
+      const customAdminUrl = '/app/admin-panel/'; // **ADAPTEZ CETTE URL**
+      window.location.href = `https://${renderApiDomain}/admin/login/?next=${encodeURIComponent(customAdminUrl)}`;
       return;
     }
 
