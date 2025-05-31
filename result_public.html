@@ -3,34 +3,84 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Important pour le responsive -->
   <title>Vos Résultats au Quiz</title>
-  <link rel="stylesheet" href="style.css" /> <!-- ou un style spécifique -->
+  <!-- Si style.css est partagé et au même niveau : -->
+  <link rel="stylesheet" href="style.css" /> 
   <style>
     /* Styles similaires à votre #result-box */
-    body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #101820; color: #00f7ff; font-family: Arial, sans-serif; }
-    .result-container { background-color: #1e1e2f; padding: 30px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); text-align: center; }
-    h2 { margin-bottom: 20px; }
-    #score_public p { margin: 10px 0; }
-    #score_public b { color: #fff; }
-    #error_message { color: red; }
+    body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #0a192f; color: #ccd6f6; font-family: 'Roboto', sans-serif; padding: 20px; }
+    .result-container { 
+        background: rgba(10, 25, 47, 0.85); 
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: 1px solid rgba(0, 247, 255, 0.2);
+        box-shadow: 0 0 30px rgba(0, 247, 255, 0.3);
+        padding: 30px 40px;
+        max-width: 600px;
+        width: 90%;
+        text-align: center; 
+    }
+    h2 { 
+        font-family: 'Orbitron', sans-serif; /* Si vous utilisez Orbitron */
+        color: #64ffda; 
+        font-size: 1.8rem;
+        margin-bottom: 25px; 
+    }
+    #score_public p { margin: 12px 0; font-size: 1.1rem; line-height: 1.6; }
+    #score_public b { color: #fff; } /* Ou #64ffda pour un look néon */
+    #error_message { color: #ff79c6; margin-top: 15px; } /* Rose pour erreur */
+    .result-container button { /* Style pour le bouton de certificat */
+        font-family: 'Orbitron', sans-serif;
+        margin-top: 25px;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: 1px solid #64ffda;
+        background: transparent;
+        color: #64ffda;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        text-transform: uppercase;
+    }
+    .result-container button:hover {
+        background-color: rgba(100, 255, 218, 0.1);
+        color: #fff;
+        box-shadow: 0 0 15px #64ffda;
+    }
+    .result-container a.back-link { /* Style pour le lien de retour */
+        display: inline-block;
+        margin-top: 30px;
+        color: #8892b0;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .result-container a.back-link:hover {
+        color: #64ffda;
+    }
   </style>
 </head>
 <body>
   <div class="result-container">
     <h2>Vos Résultats au Quiz</h2>
-    <div id="score_public">Chargement des résultats...</div>
+    <div id="score_public"><p>Chargement des résultats...</p></div>
     <div id="error_message"></div>
+    <a href="index.html" class="back-link">Retour à l'accueil du quiz</a>
   </div>
 
   <script>
-    const renderApiHostname = "https://sitersv.onrender.com";
-    const API_BASE_PUBLIC = `https://${renderApiHostname}/api`; 
+    const renderApiDomain = "sitersv.onrender.com"; // JUSTE le nom d'hôte
+    const API_BASE_PUBLIC = `https://${renderApiDomain}/api`; 
+    console.log("API pour result_public.html:", API_BASE_PUBLIC);
 
     async function loadPublicResults() {
       const urlParams = new URLSearchParams(window.location.search);
       const email = urlParams.get('email');
       const scoreDiv = document.getElementById('score_public');
       const errorDiv = document.getElementById('error_message');
+
+      scoreDiv.innerHTML = "<p>Chargement...</p>"; // Message initial plus clair
+      errorDiv.textContent = ""; // Effacer les erreurs précédentes
 
       if (!email) {
         scoreDiv.innerHTML = "";
@@ -39,49 +89,66 @@
       }
 
       try {
-        // Utilise la même API que afficherResultatsComplet
         const res = await fetch(`${API_BASE_PUBLIC}/score-details/`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" }, // Pas besoin de CSRF pour une requête POST qui récupère des données publiques si l'API est conçue ainsi
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: email })
         });
 
         if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || `Erreur HTTP ${res.status} lors de la récupération des résultats.`);
+          let errorMsg = `Erreur HTTP ${res.status} lors de la récupération des résultats.`;
+          try { // Essayer de parser l'erreur JSON du backend
+            const errData = await res.json();
+            errorMsg = errData.error || errData.message || errorMsg;
+          } catch (parseError) {
+            // Si le corps de l'erreur n'est pas JSON, utiliser le message par défaut
+          }
+          throw new Error(errorMsg);
         }
         
         const data = await res.json();
 
-        // Affichage des résultats (similaire à votre afficherResultatsComplet)
-        scoreDiv.innerHTML = `
+        let resultsHtml = `
           <p>Email : <b>${email}</b></p>
           <p>Note théorique : <b>${data.note_theorique} / ${data.total_possible_theorique || 100}</b></p>
           <p>Note pratique : <b>${data.note_pratique > 0 ? data.note_pratique : "Non disponible"} / ${data.total_possible_pratique || 100}</b></p>
-          <hr>
+          <hr style="border-color: rgba(100, 255, 218, 0.3); margin: 15px 0;">
           <p>Note finale : <b>${data.note_finale} / 100</b></p>
-          <p>Mention : <b>${data.mention}</b></p>
-        `;
+          <p>Mention : <b style="color: ${getMentionColor(data.mention)};">${data.mention}</b></p> 
+        `; // Ajout de style à la mention
+
+        scoreDiv.innerHTML = resultsHtml; // Afficher les résultats principaux
 
         if (data.note_pratique > 0 && data.certificat) {
           const btnCert = document.createElement("button");
           btnCert.textContent = "📄 Télécharger mon certificat";
-          btnCert.style.marginTop = "20px";
+          // Les styles du bouton sont maintenant dans le <style> global
           btnCert.onclick = () => {
             window.open(`${API_BASE_PUBLIC}/certificat/${email}/`, "_blank");
           };
-          scoreDiv.appendChild(btnCert);
+          scoreDiv.appendChild(btnCert); // Ajouter le bouton après le reste du HTML
         } else if (data.note_pratique > 0 && !data.certificat) {
-            scoreDiv.innerHTML += `<p style="color: orange;">Vous n'avez pas atteint le score requis pour un certificat.</p>`;
+            scoreDiv.innerHTML += `<p style="color: orange; margin-top:15px;">Vous n'avez pas atteint le score requis pour un certificat.</p>`;
         }
-
 
       } catch (err) {
         console.error("Erreur chargement résultats publics:", err);
-        scoreDiv.innerHTML = "";
+        scoreDiv.innerHTML = ""; // Effacer le message "Chargement..."
         errorDiv.textContent = `Erreur: ${err.message}`;
       }
     }
+
+    // Fonction pour obtenir une couleur basée sur la mention (optionnel)
+    function getMentionColor(mention) {
+        if (!mention) return '#fff'; // Couleur par défaut
+        const mentionLower = mention.toLowerCase();
+        if (mentionLower.includes("excellent")) return "gold";
+        if (mentionLower.includes("très bien")) return "lightgreen";
+        if (mentionLower.includes("bien")) return "yellow";
+        if (mentionLower.includes("assez bien")) return "orange";
+        return "#ff79c6"; // Pour "Insuffisant" ou autre
+    }
+
     window.onload = loadPublicResults;
   </script>
 </body>
