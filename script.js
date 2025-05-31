@@ -13,7 +13,7 @@ const quizData = [
     question: "Le Web 1.0 se distingue du Web 2.0 principalement par :",
     choices: ["Une meilleure vitesse", "L'interactivité", "Le design responsive", "L'usage de CSS"],
     answer: 1,
-    points: 4
+    points: 5
   },
   {
     question: "Quel est le rôle principal d’un développeur back-end ?",
@@ -25,7 +25,7 @@ const quizData = [
     question: "Que représente le DOM en JavaScript ?",
     choices: ["Une base de données", "Structure de navigation", "Arborescence de la page", "Langage de style"],
     answer: 2,
-    points: 3
+    points: 5
   },
   {
     question: "Quel avantage majeur apportent React ou Vue.js ?",
@@ -37,13 +37,13 @@ const quizData = [
     question: "Quels langages sont indispensables pour le front-end ?",
     choices: ["Python, PHP", "HTML, CSS, JS", "C++, Rust", "Bash, Ruby"],
     answer: 1,
-    points: 3
+    points: 5
   },
   {
     question: "À quoi sert le CSS ?",
     choices: ["Stocker les données", "Logique serveur", "Interactivité", "Styliser HTML"],
     answer: 3,
-    points: 4
+    points: 6
   },
 
     {
@@ -66,7 +66,7 @@ const quizData = [
       "Ajouter des images"
     ],
     answer: 2,
-    points: 3
+    points: 5
   },
   {
     question: "Que fait un sélecteur CSS ?",
@@ -99,7 +99,7 @@ const quizData = [
       "Une variable JS"
     ],
     answer: 1,
-    points: 3
+    points: 6
   },
   {
     question: "Quelle méthode JS permet d’écouter un clic sur un bouton ?",
@@ -121,7 +121,7 @@ const quizData = [
       "Une requête non sécurisée"
     ],
     answer: 2,
-    points: 3
+    points: 6
   },
   {
     question: "Quelle méthode JS est utilisée pour faire une requête HTTP moderne ?",
@@ -132,7 +132,7 @@ const quizData = [
       "writeData()"
     ],
     answer: 2,
-    points: 6
+    points: 5
   },
   {
     question: "Dans le modèle client-serveur, le client est :",
@@ -143,7 +143,7 @@ const quizData = [
       "Le système d’exploitation"
     ],
     answer: 1,
-    points: 3
+    points: 6
   },
   {
     question: "Quel est le rôle de PostgreSQL ?",
@@ -154,7 +154,7 @@ const quizData = [
       "Créer des animations"
     ],
     answer: 2,
-    points: 3
+    points: 5
   },
   {
     question: "Django interagit avec une base de données via :",
@@ -168,12 +168,12 @@ const quizData = [
     points: 5
   },
   {
-    question: "Dans un modèle Django, chaque champ est :",
+    question: "Une API en informatique est :",
     choices: [
-      "Une image",
-      "Une vue",
-      "Un attribut de classe représentant une colonne",
-      "Un fichier CSS"
+      "Active Pharmaceutical Ingredient",
+      "Automate Pre Institue",
+      "Application Programming Interface",
+      "Application Post Industrial"
     ],
     answer: 2,
     points: 5
@@ -187,7 +187,7 @@ const quizData = [
       "Une table Excel"
     ],
     answer: 2,
-    points: 10
+    points: 5
   }
 
 ];
