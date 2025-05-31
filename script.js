@@ -307,6 +307,18 @@ nextBtn.onclick = () => {
 };
 
 
+let API_BASE;
+const githubPagesHostname = "shegoub.github.io"; // **METTEZ VOTRE VRAI NOM D'UTILISATEUR**
+const renderApiHostname = "sitersv.onrender.com";   // **METTEZ VOTRE URL RENDER (sans /api)**
+
+if (window.location.hostname === githubPagesHostname || window.location.hostname.endsWith(`.${githubPagesHostname}`)) {
+    API_BASE = `https://${renderApiHostname}/api`; 
+    console.log("Mode Production détecté. API_BASE:", API_BASE);
+} else {
+    API_BASE = "http://127.0.0.1:8000/api"; // Dev locale
+    console.log("Mode Développement détecté. API_BASE:", API_BASE);
+}
+
 async function checkStartTime() {
   const res = await fetch(`${API_BASE}/quiz/time/`);
   const data = await res.json();
@@ -326,17 +338,7 @@ async function checkStartTime() {
   }
 }
 
-let API_BASE;
-const githubPagesHostname = "shegoub.github.io"; // **METTEZ VOTRE VRAI NOM D'UTILISATEUR**
-const renderApiHostname = "sitersv.onrender.com";   // **METTEZ VOTRE URL RENDER (sans /api)**
 
-if (window.location.hostname === githubPagesHostname || window.location.hostname.endsWith(`.${githubPagesHostname}`)) {
-    API_BASE = `https://${renderApiHostname}/api`; 
-    console.log("Mode Production détecté. API_BASE:", API_BASE);
-} else {
-    API_BASE = "http://127.0.0.1:8000/api"; // Dev locale
-    console.log("Mode Développement détecté. API_BASE:", API_BASE);
-}
 
 let currentEmail = "";
 let currentPrenom = "";
