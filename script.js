@@ -327,13 +327,15 @@ async function checkStartTime() {
 }
 
 let API_BASE;
-const githubPagesHostname = "https://shegoub.github.io"; // **METTEZ VOTRE VRAI NOM D'UTILISATEUR**
-const renderApiHostname = "https://sitersv.onrender.com";   // **METTEZ VOTRE URL RENDER (sans /api)**
+const githubPagesHostname = "shegoub.github.io"; // **METTEZ VOTRE VRAI NOM D'UTILISATEUR**
+const renderApiHostname = "sitersv.onrender.com";   // **METTEZ VOTRE URL RENDER (sans /api)**
 
 if (window.location.hostname === githubPagesHostname || window.location.hostname.endsWith(`.${githubPagesHostname}`)) {
     API_BASE = `https://${renderApiHostname}/api`; 
+    console.log("Mode Production détecté. API_BASE:", API_BASE);
 } else {
     API_BASE = "http://127.0.0.1:8000/api"; // Dev locale
+    console.log("Mode Développement détecté. API_BASE:", API_BASE);
 }
 
 let currentEmail = "";
