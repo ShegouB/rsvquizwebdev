@@ -363,6 +363,7 @@ async function checkIfAdmin() {
     const data = await res.json();
 
     if (data.is_admin) {
+      console.log("Utilisateur est admin, redirection...");
       const customAdminUrl = '/app/admin.html/'; // **ADAPTEZ CETTE URL**
       window.location.href = `https://${renderApiDomain}/admin/login/?next=${encodeURIComponent(customAdminUrl)}`;
       return;
