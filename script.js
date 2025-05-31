@@ -269,7 +269,7 @@ nextBtn.onclick = () => {
 
     fetch(`${API_BASE}/submit-quiz/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 'X-CSRFToken': getCookie('csrftoken') },
       body: JSON.stringify({
         email: currentEmail,
         nom: document.getElementById("nom").value,
@@ -308,7 +308,7 @@ nextBtn.onclick = () => {
 
 
 async function checkStartTime() {
-  const res = await fetch("/api/quiz/time/");
+  const res = await fetch(`${API_BASE}/quiz/time/`);
   const data = await res.json();
   if (data.start_time) {
     const start = new Date(data.start_time);
@@ -354,7 +354,7 @@ async function checkIfAdmin() {
   try {
     const res = await fetch(`${API_BASE}/is-admin/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 'X-CSRFToken': getCookie('csrftoken') },
       body: JSON.stringify({ email })
     });
 
@@ -399,9 +399,9 @@ async function verifyUser() {
   const msg = document.getElementById("user-message");
 
   try {
-    const res = await fetch("https://sitersv.onrender.com/api/verify-email/", {
+    const res = await fetch(`${API_BASE}/verify-email/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 'X-CSRFToken': getCookie('csrftoken') },
       body: JSON.stringify({ email: email })
     });
 
@@ -421,7 +421,7 @@ async function verifyUser() {
     // Enregistrement du nom/prénom
     await fetch(`${API_BASE}/save-name/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 'X-CSRFToken': getCookie('csrftoken')},
       body: JSON.stringify({ email, nom, prenom })
     });
 
@@ -451,7 +451,8 @@ function submitIdentity() {
 
   fetch(`${API_BASE}/save-name/`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" , 'X-CSRFToken': getCookie('csrftoken') },
+
     body: JSON.stringify({ email: currentEmail, nom, prenom })
   })
   .then(response => {
@@ -745,4 +746,19 @@ function loadQuestion() {
 
   nextBtn.disabled = true; // Désactiver "Suivant" jusqu'à ce qu'une réponse soit choisie ou que le temps soit écoulé
   startQuestionTimer(); // Démarrer le timer pour la nouvelle question
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
