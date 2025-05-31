@@ -363,7 +363,7 @@ async function checkIfAdmin() {
     const data = await res.json();
 
     if (data.is_admin) {
-      const customAdminUrl = '/app/admin-panel/'; // **ADAPTEZ CETTE URL**
+      const customAdminUrl = '/app/admin.html/'; // **ADAPTEZ CETTE URL**
       window.location.href = `https://${renderApiDomain}/admin/login/?next=${encodeURIComponent(customAdminUrl)}`;
       return;
     }
